@@ -159,19 +159,52 @@ vector<vector<int>> kSum_V1(vector<int> &nums, int sum, int k) {
 }
 
 
-vector<vector<int>> kSum_V2_Helper(vector<int> &nums, int sum, int k) {
+vector<vector<int>> twoSum_V2_VAR(vector<int> &nums, int sum, int index) {
+    int len = (int)nums.size();
+    int front = index;
+    int back = len-1;
+    vector<vector<int>> res;
+    sort(nums.begin(), nums.end());
+    
+    while (front < back) {
+        if (front > index && nums[front] == nums[front-1]) {
+            front++;
+            continue;
+        }
+        if (nums[front] + nums[back] > sum)
+            back--;
+        else if (nums[front] + nums[back] < sum)
+            front++;
+        else {
+            vector<int> temp;
+            temp.push_back(nums[front]);
+            temp.push_back(nums[back]);
+            res.push_back(temp);
+            front++;
+            back--;
+        }
+    }
+    
+    return res;
+}
+
+vector<vector<int>> kSum_V2_Helper(vector<int> &nums, int sum, int k, int index) {
     if (k < 2)
         return {{0}};
     if (k == 2)
-        return twoSum_V2(nums, sum);
+        return twoSum_V2_VAR(nums, sum, index);
 
     int len = (int)nums.size();
     vector<vector<int>> res;
     
-    for (int i = 0; i < len; ++i) {
-        if (i > 0 && nums[i] == nums[i-1])
+    for (int i = index; i < len-k+1; ++i) {
+        if (i > index && nums[i] == nums[i-1])
             continue;
-        vector<vector<int>> temp = kSum_V2_Helper(nums, sum-nums[i], k-1);
+        if (k == 3)
+            cout << nums[i];
+        vector<vector<int>> temp = kSum_V2_Helper(nums, sum-nums[i], k-1, i+1);
+        if (k == 3)
+        printLofL(temp);
         int temp_len = (int)temp.size();
         for (int j = 0; j < temp_len; ++j) {
             vector<int> temp_j = temp[j];
@@ -185,14 +218,14 @@ vector<vector<int>> kSum_V2_Helper(vector<int> &nums, int sum, int k) {
 
 vector<vector<int>> kSum_V2(vector<int> &nums, int sum, int k) {
     sort(nums.begin(), nums.end());
-    return kSum_V2_Helper(nums, sum, k);
+    return kSum_V2_Helper(nums, sum, k, 0);
 }
 
 
 int main(int argc, const char * argv[]) {
-    vector<int> S = {1,1,3, 3,1,1,2, 6, 7, 8, 9, 1};
-    vector<vector<int>> t = kSum_V2(S, 5, 4);
+    vector<int> S = {-1,0,-5,-2,-2,-4,0,1,-2};
+    vector<vector<int>> t = kSum_V2(S, -9, 4);
     printLofL(t);
-    
+    //{-5,-4,-2,-2,-2,-1,1,0,0}
     return 0;
 }
