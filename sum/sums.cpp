@@ -41,7 +41,7 @@ vector<vector<int>> twoSum_V1(vector<int> &nums, int sum) {
     
     for (int i = 0; i < len; ++i)
         hashMap[nums[i]]++;
-
+    
     
     for (int i = 0; i < len; ++i) {
         int index = sum - nums[i];
@@ -68,8 +68,12 @@ vector<vector<int>> twoSum_V2(vector<int> &nums, int sum) {
     int back = len-1;
     vector<vector<int>> res;
     sort(nums.begin(), nums.end());
-
+    
     while (front < back) {
+        if (front > 0 && nums[front] == nums[front-1]) {
+            front++;
+            continue;
+        }
         if (nums[front] + nums[back] > sum)
             back--;
         else if (nums[front] + nums[back] < sum)
@@ -122,7 +126,7 @@ vector<vector<int>> kSum_Helper(vector<int> &nums, int sum, int k, unordered_map
     vector<vector<int>> res;
     
     for (int i = 0; i < len; ++i) {
-
+        
         vector<vector<int>> temp = kSum_Helper(nums, sum-nums[i], k-1, hashMap);
         
         if (temp.size() != 0) {
@@ -145,7 +149,8 @@ vector<vector<int>> kSum_Helper(vector<int> &nums, int sum, int k, unordered_map
     return res;
 }
 
-vector<vector<int>> kSum(vector<int> &nums, int sum, int k) {
+// This Version will produce duplicates
+vector<vector<int>> kSum_V1(vector<int> &nums, int sum, int k) {
     unordered_map<int, int> hashMap;
     int len = (int)nums.size();
     for (int i = 0; i < len; ++i)
@@ -154,9 +159,39 @@ vector<vector<int>> kSum(vector<int> &nums, int sum, int k) {
 }
 
 
+vector<vector<int>> kSum_V2_Helper(vector<int> &nums, int sum, int k) {
+    if (k < 2)
+        return {{0}};
+    if (k == 2)
+        return twoSum_V2(nums, sum);
+
+    int len = (int)nums.size();
+    vector<vector<int>> res;
+    
+    for (int i = 0; i < len; ++i) {
+        if (i > 0 && nums[i] == nums[i-1])
+            continue;
+        vector<vector<int>> temp = kSum_V2_Helper(nums, sum-nums[i], k-1);
+        int temp_len = (int)temp.size();
+        for (int j = 0; j < temp_len; ++j) {
+            vector<int> temp_j = temp[j];
+            temp_j.push_back(nums[i]);
+            res.push_back(temp_j);
+        }
+    }
+    
+    return res;
+}
+
+vector<vector<int>> kSum_V2(vector<int> &nums, int sum, int k) {
+    sort(nums.begin(), nums.end());
+    return kSum_V2_Helper(nums, sum, k);
+}
+
+
 int main(int argc, const char * argv[]) {
-    vector<int> S = {1, 2, 1, 5, 4, 3, 3};
-    vector<vector<int>> t = kSum(S, 8, 4);
+    vector<int> S = {1,1,3, 3,1,1,2, 6, 7, 8, 9, 1};
+    vector<vector<int>> t = kSum_V2(S, 5, 4);
     printLofL(t);
     
     return 0;
