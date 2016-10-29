@@ -24,3 +24,25 @@ bool isValid(string s) {
     
     return stk.empty();
 }
+
+int longestValidParentheses(string s) {
+    int maxLen = 0;
+    int start = 0;
+    vector<int> stack;
+    
+    for (int i = 0; i < (int)s.size(); ++i) {
+        if (s[i] == '(') {
+            stack.push_back(i);
+        } else {
+            if (stack.empty())
+                start=i+1;
+            else {
+                stack.pop_back();
+                maxLen = max(maxLen, stack.empty()?i-start+1:i-stack.back());
+            }
+        }
+        
+    }
+    
+    return maxLen;
+}
