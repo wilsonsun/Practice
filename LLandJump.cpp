@@ -40,6 +40,21 @@ void jump_Helper(vector<int> &nums, int steps, int index,  vector<int> &res) {
     return;
 }
 
+bool canJump(vector<int>& nums) {
+    int farthest = -1;
+    int len = (int)nums.size();
+    for (int i = 0; i < len; ++i) {
+        if (i + nums[i] > farthest)
+            farthest = i + nums[i];
+        if (farthest >= len-1)
+            return true;
+        if (farthest < i+1)
+            return false;
+    }
+    return false;
+}
+
+
 // This runs crazy haha... N^N
 int jump_V1(vector<int> &nums) {
     vector<int> res;
