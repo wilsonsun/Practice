@@ -136,6 +136,28 @@ int RodCutting_DP_BU(int len){
     return r;
 }
 
+bool isSubsequence(string s, string t) {
+    if (s == "")
+        return true;
+    
+    int slen = (int)s.length();
+    int tlen = (int)t.length();
+    int i = 0;
+    int j = 0;
+    
+    
+    while (i < slen-1 && j < tlen-1) {
+        if (s[i] == t[j]) {
+            i++;
+            j++;
+        } else {
+            j++;
+        }
+    }
+    
+    return i == slen-1;
+}
+
 
 int main(int argc, const char * argv[]) {
     cout << RodCutting_DP_BU(10) << endl;
